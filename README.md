@@ -36,10 +36,10 @@ cd respawn/
 3. Run the setup script:
 
 ```bash
-./setup.sh
+bash ./setup.sh
 ```
 
-4. Watch he script handle the rest of the process.
+4. Watch the script handle the rest of the process.
 
 5. Once the script is done, reboot your system to see the changes !
 
