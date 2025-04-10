@@ -40,3 +40,9 @@ cp dotfiles/kitty/kitty.conf ~/.config/kitty/kitty.conf
 cp dotfiles/kitty/theme.conf ~/.config/kitty/theme.conf
 cp dotfiles/kitty/gruvbox_dark.conf ~/.config/kitty/kitty-themes/themes/
 echo ">> Kitty config complete."
+
+# nvim setup
+echo ">> Setting up neovim config with lazyvim..."
+git clone https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git
+echo ">> Neovim config complete."
