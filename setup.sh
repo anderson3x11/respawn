@@ -81,8 +81,8 @@ echo ">> Enabling services..."
 enable_services
 
 # Change the wallpaper
-echo ">> Changing wallpaper..."
-plasma-apply-wallpaperimage kde/wallpaper.png
+#echo ">> Changing wallpaper..."
+#plasma-apply-wallpaperimage kde/wallpaper.png
 
 
 echo "Setup complete! You may want to reboot your system."
