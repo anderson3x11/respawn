@@ -14,7 +14,7 @@ this project is not complete yet
 
 ## 📦 Prerequisites
 
-- A fresh Arch Linux installation
+- A fresh Arch Linux installation made with archinstall and without a DE
 - Internet connection
 - sudo privileges
 - Git installed
@@ -27,13 +27,17 @@ this project is not complete yet
 git clone https://github.com/anderson3x11/respawn.git
 ```
 
-2. Run the setup script:
+2. Move into the directory
+
+```bash
+cd respawn/
+```
+
+3. Run the setup script:
 
 ```bash
 ./setup.sh
 ```
-
-3. Follow the prompts on screen.
 
 4. Watch he script handle the rest of the process.
 
