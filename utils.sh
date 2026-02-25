@@ -4,7 +4,7 @@
 install_packages() {
     for pkg in "$@"; do
         echo "  -> Installing $pkg..."
-        sudo pacman -S --noconfirm --needed "$pkg"
+        sudo pacman -S --noconfirm --needed -q "$pkg" &>> "$LOG_FILE"
     done
 }
 
@@ -12,7 +12,7 @@ install_packages() {
 install_aur_packages() {
     for pkg in "$@"; do
         echo "  -> Installing AUR package: $pkg..."
-        yay -S --noconfirm --needed "$pkg"
+        yay -S --noconfirm --needed -q "$pkg" &>> "$LOG_FILE"
     done
 }
 
@@ -20,7 +20,7 @@ install_aur_packages() {
 enable_services() {
     for svc in "${SERVICES[@]}"; do
         echo "  -> Enabling $svc..."
-        sudo systemctl enable "$svc"
+        sudo systemctl enable "$svc" &>> "$LOG_FILE"
     done
 }
 
@@ -31,7 +31,7 @@ setup_dotfiles() {
 
     echo "  -> Cloning dotfiles repo..."
     rm -rf "$tmp_dir"
-    git clone "$dotfiles_repo" "$tmp_dir"
+    git clone "$dotfiles_repo" "$tmp_dir" &>> "$LOG_FILE"
 
     echo "  -> Copying .zshrc..."
     cp "$tmp_dir/.zshrc" "$HOME/.zshrc"

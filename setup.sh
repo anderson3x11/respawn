@@ -45,16 +45,16 @@ echo
 
 # Update the system first
 echo ">> Updating system..."
-sudo pacman -Syu --noconfirm &>> "$LOG_FILE"
+sudo pacman -Syu --noconfirm -q &>> "$LOG_FILE"
 echo
 
 # Install yay AUR helper if not present
 if ! command -v yay &> /dev/null; then
   echo ">> Installing yay AUR helper..."
-  sudo pacman -S --needed git base-devel --noconfirm &>> "$LOG_FILE"
+  sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE"
   git clone https://aur.archlinux.org/yay.git &>> "$LOG_FILE"
   cd yay
-  makepkg -si --noconfirm &>> "$LOG_FILE"
+  makepkg -si --noconfirm --quiet &>> "$LOG_FILE"
   cd ..
   rm -rf yay
   echo
@@ -91,6 +91,11 @@ echo
 # Enable services
 echo ">> Enabling services..."
 enable_services
+echo
+
+# Enable ufw firewall rules
+echo ">> Enabling ufw firewall..."
+sudo ufw enable &>> "$LOG_FILE"
 echo
 
 # Set up dotfiles
