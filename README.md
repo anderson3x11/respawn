@@ -1,20 +1,25 @@
-this project is not complete yet
-
 # Anderson's Respawn Tool 🛠️
 
-⚡️ **respawn** is a personal Arch Linux setup automation tool built with Bash. It installs and configures packages, desktop environments, and various utilities to create a fully functional development environment, right out of the box.
+⚡️ **respawn** is a personal Arch Linux setup automation tool built with Bash. It installs and configures packages and various utilities to create a fully functional development environment, right out of the box.
+
+```
+   ___                              
+  / _ \___ ___ ___  ___ __    _____ 
+ / , _/ -_|_-</ _ \/ _ `/ |/|/ / _ \        Arch Linux Setup Making Tool
+/_/|_|\__/___/ .__/\_,_/|__,__/_//_/        by: anderson3x11
+            /_/ 
+```
 
 ## ✨ Features
 
 - 🔧 Automatic package installation
 - 🛠️ Automatic installation of yay AUR helper
 - 💻 Sets up your terminal for a zen experience
-- 🚀 Minimalist 'but complete' KDE environment
-- ⚙️ Automatic software configuration
+- ⚙️ Automatic software configuration (Neovim, Tmux)
 
 ## 📦 Prerequisites
 
-- A fresh Arch Linux installation made with archinstall and without a DE
+- A fresh Arch Linux installation
 - Internet connection
 - sudo privileges
 - Git installed
