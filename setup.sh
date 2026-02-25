@@ -54,7 +54,7 @@ if ! command -v yay &> /dev/null; then
   sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE"
   git clone https://aur.archlinux.org/yay.git &>> "$LOG_FILE"
   cd yay
-  makepkg -si --noconfirm --quiet &>> "$LOG_FILE"
+  makepkg -si --noconfirm &>> "$LOG_FILE"
   cd ..
   rm -rf yay
   echo
