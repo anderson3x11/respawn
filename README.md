@@ -12,14 +12,16 @@
 
 ## ✨ Features
 
-- 🔧 Automatic package installation
+- 🔧 Automatic package installation (pacman, AUR, npm)
 - 🛠️ Automatic installation of yay AUR helper
-- 💻 Sets up your terminal for a zen experience
-- ⚙️ Automatic software configuration (Neovim, Tmux)
+- 💻 Sets up your terminal and dotfiles
+- 🔒 Firewall (ufw) and bluetooth configured and enabled
+- 🤖 Installs Claude CLI and Gemini CLI
+- ♻️ Safe to re-run — already installed packages are skipped
 
 ## 📦 Prerequisites
 
-- A fresh Arch Linux installation
+- Arch Linux installation
 - Internet connection
 - sudo privileges
 - Git installed
