@@ -65,6 +65,7 @@ if ! command -v yay &>/dev/null; then
     fi
     cd yay
     start_spinner "Building yay"
+    echo
     if makepkg -si --noconfirm &>/dev/null; then
         ok "Installed yay"
     else
@@ -107,7 +108,7 @@ echo
 
 echo ">> Enabling bluetooth..."
 start_spinner "Bluetooth Service"
-if sudo systemctl enable bluetooth.service &>/dev/null; then
+if sudo systemctl enable --now bluetooth.service &>/dev/null; then
     ok "Bluetooth enabled"
 else
     fail "Failed to enable Bluetooth"
@@ -123,17 +124,10 @@ else
 fi
 
 start_spinner "Enabling ufw"
-if sudo ufw enable &>/dev/null; then
+if sudo ufw --force enable &>/dev/null; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"
-fi
-
-start_spinner "Enabling ufw.service"
-if sudo systemctl enable ufw &>/dev/null; then
-    ok "Enabled ufw.service"
-else
-    fail "Failed to enable ufw.service"
 fi
 echo
 
