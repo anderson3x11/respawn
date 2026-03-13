@@ -16,13 +16,6 @@ EOF
 echo ">> Booting up the respawn protocol..."
 echo
 
-# ── Log ───────────────────────────────────────────────────────────────────────
-
-LOG_FILE="$HOME/respawn.log"
-echo "=== Respawn run: $(date) ===" >> "$LOG_FILE"
-echo ">> Logging to $LOG_FILE"
-echo
-
 # ── Load files ────────────────────────────────────────────────────────────────
 
 source "$SCRIPT_DIR/utils.sh"
@@ -49,7 +42,7 @@ echo
 
 echo ">> Updating system..."
 start_spinner "Running pacman -Syu"
-if sudo pacman -Syu --noconfirm -q &>> "$LOG_FILE"; then
+if sudo pacman -Syu --noconfirm -q &>/dev/null; then
     ok "System updated"
 else
     fail "System update failed"
@@ -60,18 +53,25 @@ echo
 
 if ! command -v yay &>/dev/null; then
     echo ">> Installing yay AUR helper..."
-    sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE"
-    rm -rf /tmp/yay-build
+    sudo pacman -S --needed git base-devel --noconfirm -q &>/dev/null
+    if [[ -d "yay" ]]; then
+        rm -rf yay
+    fi
+    start_spinner "Cloning yay"
+    if git clone https://aur.archlinux.org/yay.git &>/dev/null; then
+        ok "Cloned yay"
+    else
+        fail "Failed to clone yay"
+    fi
+    cd yay
     start_spinner "Building yay"
-    if git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
-       cd /tmp/yay-build &&
-       makepkg -si --noconfirm &>> "$LOG_FILE"; then
+    if makepkg -si --noconfirm &>/dev/null; then
         ok "Installed yay"
     else
         fail "Failed to install yay"
     fi
-    cd "$SCRIPT_DIR"
-    rm -rf /tmp/yay-build
+    cd ..
+    rm -rf yay
 else
     skip "yay already installed"
 fi
@@ -103,37 +103,34 @@ echo ">> Installing AUR packages..."
 install_aur_packages "${AUR_PACKAGES[@]}"
 echo
 
-
 # ── Services ──────────────────────────────────────────────────────────────────
 
-echo ">> Enabling services..."
-for svc in "${SERVICES[@]}"; do
-    start_spinner "Enabling $svc"
-    if sudo systemctl enable "$svc" &>> "$LOG_FILE"; then
-        ok "Enabled $svc"
-    else
-        fail "Failed to enable $svc"
-    fi
-done
+echo ">> Enabling bluetooth..."
+start_spinner "Bluetooth Service"
+if sudo systemctl enable bluetooth.service &>/dev/null; then
+    ok "Bluetooth enabled"
+else
+    fail "Failed to enable Bluetooth"
+fi
 echo
 
 echo ">> Enabling ufw firewall..."
 start_spinner "Rate-limiting SSH"
-if sudo ufw limit ssh &>> "$LOG_FILE"; then
+if sudo ufw limit ssh &>/dev/null; then
     ok "SSH rate-limited"
 else
     fail "Failed to limit SSH"
 fi
 
 start_spinner "Enabling ufw"
-if sudo ufw enable &>> "$LOG_FILE"; then
+if sudo ufw enable &>/dev/null; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"
 fi
 
 start_spinner "Enabling ufw.service"
-if sudo systemctl enable ufw &>> "$LOG_FILE"; then
+if sudo systemctl enable ufw &>/dev/null; then
     ok "Enabled ufw.service"
 else
     fail "Failed to enable ufw.service"
@@ -153,4 +150,3 @@ echo
 # ── Done ──────────────────────────────────────────────────────────────────────
 
 echo ">> Respawn complete! Reboot your system to apply all changes."
-echo "   Full log: $LOG_FILE"

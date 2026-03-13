@@ -41,7 +41,7 @@ install_packages() {
             skip "Already installed: $pkg"
         else
             start_spinner "Installing $pkg"
-            if sudo pacman -S --noconfirm --needed -q "$pkg" &>> "$LOG_FILE"; then
+            if sudo pacman -S --noconfirm --needed -q "$pkg" &>/dev/null; then
                 ok "Installed $pkg"
             else
                 fail "Failed to install $pkg"
@@ -53,7 +53,7 @@ install_packages() {
 install_aur_packages() {
     for pkg in "$@"; do
         start_spinner "Installing AUR: $pkg"
-        if yay -S --noconfirm --needed -q "$pkg" &>> "$LOG_FILE"; then
+        if yay -S --noconfirm --needed -q "$pkg" &>/dev/null; then
             ok "Installed $pkg"
         else
             fail "Failed to install $pkg"
@@ -69,7 +69,7 @@ setup_dotfiles() {
 
     rm -rf "$tmp_dir"
     start_spinner "Cloning dotfiles"
-    if ! git clone "$dotfiles_repo" "$tmp_dir" &>> "$LOG_FILE"; then
+    if ! git clone "$dotfiles_repo" "$tmp_dir" &>/dev/null; then
         fail "Failed to clone dotfiles"
         return 1
     fi
