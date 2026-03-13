@@ -56,6 +56,7 @@ if ! command -v yay &>/dev/null; then
         sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE" &&
         git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
         cd /tmp/yay-build &&
+        sudo -v &&
         makepkg -si --noconfirm &>> "$LOG_FILE"
     ); then
         ok "Installed yay"
@@ -137,6 +138,13 @@ if sudo ufw --force enable &>> "$LOG_FILE"; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"
+fi
+
+start_spinner "Enabling ufw.service"
+if sudo systemctl enable --now ufw.service &>> "$LOG_FILE"; then
+    ok "Enabled ufw.service"
+else
+    fail "Failed to enable ufw.service"
 fi
 echo
 

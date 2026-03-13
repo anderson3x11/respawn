@@ -67,7 +67,7 @@ install_npm_packages() {
             skip "Already installed: $pkg"
         else
             start_spinner "Installing npm: $pkg"
-            if npm install -g "$pkg" &>> "$LOG_FILE"; then
+            if sudo npm install -g "$pkg" &>> "$LOG_FILE"; then
                 ok "Installed $pkg"
             else
                 fail "Failed to install $pkg"
@@ -130,7 +130,7 @@ setup_zsh() {
         skip "zsh is already the default shell"
     else
         start_spinner "Changing default shell to zsh"
-        if chsh -s "$zsh_path" "$USER"; then
+        if sudo chsh -s "$zsh_path" "$USER"; then
             ok "Default shell changed to zsh"
         else
             fail "Failed to change shell"
