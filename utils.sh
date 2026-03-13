@@ -61,19 +61,6 @@ install_aur_packages() {
     done
 }
 
-# ── Services ──────────────────────────────────────────────────────────────────
-
-enable_services() {
-    for svc in "${SERVICES[@]}"; do
-        start_spinner "Enabling $svc"
-        if sudo systemctl enable --now "$svc" &>> "$LOG_FILE"; then
-            ok "Enabled $svc"
-        else
-            fail "Failed to enable $svc"
-        fi
-    done
-}
-
 # ── Dotfiles ──────────────────────────────────────────────────────────────────
 
 setup_dotfiles() {

@@ -60,18 +60,17 @@ echo
 
 if ! command -v yay &>/dev/null; then
     echo ">> Installing yay AUR helper..."
-    # Install deps before spinner to avoid sudo prompt mixing with spinner
     sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE"
+    rm -rf /tmp/yay-build
     start_spinner "Building yay"
-    if (
-        git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
-        cd /tmp/yay-build &&
-        makepkg -si --noconfirm &>> "$LOG_FILE"
-    ); then
+    if git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
+       cd /tmp/yay-build &&
+       makepkg -si --noconfirm &>> "$LOG_FILE"; then
         ok "Installed yay"
     else
         fail "Failed to install yay"
     fi
+    cd "$SCRIPT_DIR"
     rm -rf /tmp/yay-build
 else
     skip "yay already installed"
@@ -108,7 +107,14 @@ echo
 # ── Services ──────────────────────────────────────────────────────────────────
 
 echo ">> Enabling services..."
-enable_services
+for svc in "${SERVICES[@]}"; do
+    start_spinner "Enabling $svc"
+    if sudo systemctl enable "$svc" &>> "$LOG_FILE"; then
+        ok "Enabled $svc"
+    else
+        fail "Failed to enable $svc"
+    fi
+done
 echo
 
 echo ">> Enabling ufw firewall..."
@@ -120,14 +126,14 @@ else
 fi
 
 start_spinner "Enabling ufw"
-if yes | sudo ufw enable &>> "$LOG_FILE"; then
+if sudo ufw enable &>> "$LOG_FILE"; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"
 fi
 
 start_spinner "Enabling ufw.service"
-if sudo systemctl enable ufw.service &>> "$LOG_FILE"; then
+if sudo systemctl enable ufw &>> "$LOG_FILE"; then
     ok "Enabled ufw.service"
 else
     fail "Failed to enable ufw.service"
