@@ -65,7 +65,6 @@ if ! command -v yay &>/dev/null; then
     fi
     cd yay
     start_spinner "Building yay"
-    echo
     if makepkg -si --noconfirm &>/dev/null; then
         ok "Installed yay"
     else
@@ -115,20 +114,20 @@ else
 fi
 echo
 
-echo ">> Enabling ufw firewall..."
+echo ">> Configuring ufw firewall..."
 start_spinner "Rate-limiting SSH"
 if sudo ufw limit ssh &>/dev/null; then
     ok "SSH rate-limited"
 else
     fail "Failed to limit SSH"
 fi
-
-start_spinner "Enabling ufw"
-if sudo ufw --force enable &>/dev/null; then
-    ok "ufw enabled"
-else
-    fail "Failed to enable ufw"
-fi
+# ufw enable fails before first reboot — run 'sudo ufw enable' manually after reboot
+# start_spinner "Enabling ufw"
+# if sudo ufw --force enable &>/dev/null; then
+#     ok "ufw enabled"
+# else
+#     fail "Failed to enable ufw"
+# fi
 echo
 
 # ── Dotfiles & shell ──────────────────────────────────────────────────────────
@@ -143,4 +142,4 @@ echo
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 
-echo ">> Respawn complete! Reboot your system to apply all changes."
+echo ">> Respawn complete! Reboot your system to apply all changes. DON'T FORGET TO ENABLE UFW AFTER REBOOTING!"

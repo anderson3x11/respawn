@@ -12,11 +12,10 @@
 
 ## ✨ Features
 
-- 🔧 Automatic package installation (pacman, AUR, npm)
+- 🔧 Automatic package installation (pacman, AUR)
 - 🛠️ Automatic installation of yay AUR helper
 - 💻 Sets up your terminal and dotfiles
-- 🔒 Firewall (ufw) and bluetooth configured and enabled
-- 🤖 Installs Claude CLI and Gemini CLI
+- 🔒 Firewall (ufw) and bluetooth configured
 - ♻️ Safe to re-run — already installed packages are skipped
 
 ## 📦 Prerequisites
@@ -48,7 +47,13 @@ bash ./setup.sh
 
 4. Watch the script handle the rest of the process.
 
-5. Once the script is done, reboot your system to see the changes !
+5. Once the script is done, reboot your system to apply all changes.
+
+6. After reboot, enable the firewall manually:
+
+```bash
+sudo ufw enable
+```
 
 ## 🔒 Disclaimer
 This is first and foremost a personal project, and may not correspond to your needs. Feel free to fork it and modify it to fit your setup. Be cautious when running scripts that modify system configurations.
