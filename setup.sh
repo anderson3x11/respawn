@@ -33,6 +33,15 @@ if [ ! -f "$SCRIPT_DIR/packages.conf" ]; then
 fi
 source "$SCRIPT_DIR/packages.conf"
 
+# ── Sudo keepalive ────────────────────────────────────────────────────────────
+
+echo ">> Sudo credentials required for setup."
+sudo -v
+# Keep sudo alive in the background for the entire script
+(while true; do sudo -n true; sleep 50; done) &
+SUDO_PID=$!
+trap 'kill $SUDO_PID 2>/dev/null' EXIT
+
 echo ">> Starting system setup..."
 echo
 
@@ -56,7 +65,6 @@ if ! command -v yay &>/dev/null; then
         sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE" &&
         git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
         cd /tmp/yay-build &&
-        sudo -v &&
         makepkg -si --noconfirm &>> "$LOG_FILE"
     ); then
         ok "Installed yay"
@@ -95,22 +103,6 @@ echo ">> Installing AUR packages..."
 install_aur_packages "${AUR_PACKAGES[@]}"
 echo
 
-echo ">> Installing npm packages..."
-install_npm_packages "${NPM_PACKAGES[@]}"
-echo
-
-echo ">> Installing Claude CLI..."
-if command -v claude &>/dev/null; then
-    skip "Claude CLI already installed"
-else
-    start_spinner "Installing Claude CLI"
-    if curl -fsSL https://claude.ai/install.sh | bash &>> "$LOG_FILE"; then
-        ok "Installed Claude CLI"
-    else
-        fail "Failed to install Claude CLI"
-    fi
-fi
-echo
 
 # ── Services ──────────────────────────────────────────────────────────────────
 
@@ -118,30 +110,23 @@ echo ">> Enabling services..."
 enable_services
 echo
 
-echo ">> Configuring ufw firewall..."
-start_spinner "Setting default rules"
-if sudo ufw default deny incoming &>> "$LOG_FILE" && sudo ufw default allow outgoing &>> "$LOG_FILE"; then
-    ok "Default rules set (deny incoming / allow outgoing)"
+echo ">> Enabling ufw firewall..."
+start_spinner "Rate-limiting SSH"
+if sudo ufw limit ssh &>> "$LOG_FILE"; then
+    ok "SSH rate-limited"
 else
-    fail "Failed to set default rules"
-fi
-
-start_spinner "Allowing SSH"
-if sudo ufw allow ssh &>> "$LOG_FILE"; then
-    ok "SSH allowed"
-else
-    fail "Failed to allow SSH"
+    fail "Failed to limit SSH"
 fi
 
 start_spinner "Enabling ufw"
-if sudo ufw --force enable &>> "$LOG_FILE"; then
+if sudo ufw enable &>> "$LOG_FILE"; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"
 fi
 
 start_spinner "Enabling ufw.service"
-if sudo systemctl enable --now ufw.service &>> "$LOG_FILE"; then
+if sudo systemctl enable ufw.service &>> "$LOG_FILE"; then
     ok "Enabled ufw.service"
 else
     fail "Failed to enable ufw.service"
