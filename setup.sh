@@ -60,9 +60,10 @@ echo
 
 if ! command -v yay &>/dev/null; then
     echo ">> Installing yay AUR helper..."
+    # Install deps before spinner to avoid sudo prompt mixing with spinner
+    sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE"
     start_spinner "Building yay"
     if (
-        sudo pacman -S --needed git base-devel --noconfirm -q &>> "$LOG_FILE" &&
         git clone https://aur.archlinux.org/yay.git /tmp/yay-build &>> "$LOG_FILE" &&
         cd /tmp/yay-build &&
         makepkg -si --noconfirm &>> "$LOG_FILE"
@@ -119,7 +120,7 @@ else
 fi
 
 start_spinner "Enabling ufw"
-if sudo ufw enable &>> "$LOG_FILE"; then
+if yes | sudo ufw enable &>> "$LOG_FILE"; then
     ok "ufw enabled"
 else
     fail "Failed to enable ufw"

@@ -61,21 +61,6 @@ install_aur_packages() {
     done
 }
 
-install_npm_packages() {
-    for pkg in "$@"; do
-        if npm list -g --depth=0 "$pkg" &>/dev/null; then
-            skip "Already installed: $pkg"
-        else
-            start_spinner "Installing npm: $pkg"
-            if sudo npm install -g "$pkg" &>> "$LOG_FILE"; then
-                ok "Installed $pkg"
-            else
-                fail "Failed to install $pkg"
-            fi
-        fi
-    done
-}
-
 # ── Services ──────────────────────────────────────────────────────────────────
 
 enable_services() {
